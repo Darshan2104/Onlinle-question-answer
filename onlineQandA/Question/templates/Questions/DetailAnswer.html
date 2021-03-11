@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Question</title>
+</head>
+
+<body>
+    <h1>DETALED Answer</h1>
+
+
+    <form action="/Listanswer/{{qid}}/update/{{ans.id}}">
+        <input type="submit" value="EDIT">
+    </form>
+    <a href="{% url 'Home' %}">Home</a>
+    <a href="/Listanswer/{{qid}}">LIST of Answers</a>
+    <a href="/DetailsQUE/{{ans.Qid.id}}">Back to Question</a>
+    <br /><br /><br />
+    <hr />
+    <form action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/like" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="ansid" value="{{ans.id}}">Like</button>
+    </form>
+    <form action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/dislike" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="ansid" value="{{ans.id}}">disLike</button>
+    </form>
+    <h5>View :{{total_view}}</h5>
+    <h5>Likes : {{total_like}}</h5>
+    <h3>{{ans.title}}</h3>
+    <h5>{{ans.postdate}}</h5>
+    <h4>{{ans.description |safe}}</h4>
+    {%for l in tagsList%}
+    {{l}}
+    {%endfor%}
+    <hr />
+</body>
+
+</html>

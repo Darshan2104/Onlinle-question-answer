@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>ADD Question</title>
+</head>
+
+<body>
+    <a href="{% url 'Home' %}">Home</a>
+
+    {% load crispy_forms_tags %}
+    <h1>ADD QUESTION</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{q_form.media}}
+        {{q_form|crispy}}
+        <input type="submit" value="POST" />
+    </form>
+
+</body>
+
+</html>

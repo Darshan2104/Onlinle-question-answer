@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers</title>
+</head>
+
+<body>
+
+    <a href="{% url 'Home' %}">Home</a>
+    <a href="/DetailsQUE/{{qid}}">Back to Question</a>
+
+    <h1>LIST OF Answers of Question {{qid}}</h1>
+    <hr>
+    {% for q in qlist %}
+    <a href="/Listanswer/{{qid}}/DetailsANS/{{q.id}}">{{q.title}}</a>
+    <br />
+    <hr>
+    {% endfor %}
+
+</body>
+
+</html>

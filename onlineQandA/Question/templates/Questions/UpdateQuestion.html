@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>UPdate Question</title>
+</head>
+
+<body>
+    <!-- {% load crispy_forms_tags %} -->
+    <h1>UPDATE QUESTION</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{q_form.media}}
+
+        {{q_form.title}}
+        <br />
+        {{q_form.description}}<br />
+
+        <!-- <br /> -->
+        <!-- <input type="text" data-role="tagsinput" class="form-control" id="tags" name="tags"
+            value="{%for l in tagList%}{{l}},{%endfor%}"> -->
+
+        <br />
+        <input type="submit" value="Update" />
+    </form>
+
+</body>
+
+</html>

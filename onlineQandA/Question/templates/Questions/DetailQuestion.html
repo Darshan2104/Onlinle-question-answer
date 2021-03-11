@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Question</title>
+</head>
+
+<body>
+    <h1>DETALED QUESTION</h1>
+
+    <form action="/update/{{quest.id}}">
+        <input type="submit" value="EDIT">
+    </form>
+
+    <a href="/">Home</a>
+    <a href="/ans/{{quest.id}}">ADD ANSWER</a>
+    <a href="/Listanswer/{{quest.id}}">LIST of Answers</a>
+    <br /><br /><br />
+    <hr>
+    <!-- LIKE -->
+    <form action="/DetailsQUE/{{quest.id}}/like" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="queid" value="{{quest.id}}">Like</button>
+    </form>
+    <!-- Dislike -->
+    <form action="/DetailsQUE/{{quest.id}}/dislike" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="queid" value="{{quest.id}}">disLike</button>
+    </form>
+    <!-- End like-dislike -->
+    <h3>Views : {{total_view}}</h3>
+    <h5>Likes : {{total_like}}</h5>
+    <h3>{{quest.title}}</h3>
+    <h5>{{quest.postdate}}</h5>
+    <h4>{{quest.description |safe}}</h4>
+    {%for l in tagsList%}
+    {{l}}
+    {%endfor%}
+    <hr>
+</body>
+
+</html>
