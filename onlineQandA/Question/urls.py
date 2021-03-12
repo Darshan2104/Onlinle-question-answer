@@ -26,5 +26,9 @@ urlpatterns = [
     # Updateanswer
     path('Listanswer/<int:qid>/update/<int:aid>',
          views.Updateanswer, name='Update-Answer'),
-
+    #    Comment section for question
+    path('DetailsQUE/<int:qid>/comment', views.QuestionComment,
+         name='Detail-Question-comment'),
+    path('Listanswer/<int:qid>/DetailsANS/<int:aid>/comment', views.AnswerComment,
+         name='Detail-Answer-comment'),
 ]

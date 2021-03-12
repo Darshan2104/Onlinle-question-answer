@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from Profile.models import Profile
 from django.contrib.auth.decorators import login_required
-from .models import Question, Answer, IpModel
+from .models import Question, Answer, IpModel, Comment
 from taggit.models import Tag
 from django.contrib import messages
 from .forms import Questiondetails, Answerdetails
@@ -11,6 +11,48 @@ import datetime
 
 
 # Create your views here.
+
+# Comment
+
+def QuestionComment(request, qid):
+    quest = get_object_or_404(Question, id=qid)
+    obj = Comment.objects.create(postby=request.user)
+    obj.body = request.POST.get('body')
+    # conditions for parent comment remaining
+    try:
+        parent_cid = int(request.POST.get('parentid'))
+    except:
+        parent_cid = None
+    if parent_cid:
+        obj.parent = Comment.objects.get(id=parent_cid)
+    obj.save()
+    quest.comment.add(obj)
+    return HttpResponseRedirect(reverse('Detail-Question', args=[str(qid)]))
+
+# AnswerComment
+
+
+def AnswerComment(request, qid, aid):
+    ans = get_object_or_404(Answer, id=aid)
+    obj = Comment.objects.create(postby=request.user)
+    obj.body = request.POST.get('body')
+
+    # conditions for parent comment remaining
+    try:
+        parent_cid = int(request.POST.get('parentid'))
+    except:
+        parent_cid = None
+
+    if parent_cid:
+        obj.parent = Comment.objects.get(id=parent_cid)
+
+    obj.save()
+    ans.comment.add(obj)
+    return HttpResponseRedirect(reverse('Detail-Answer', args=[str(qid), str(aid)]))
+
+# Like-Dislike
+
+
 def Questionlike(request, qid):
     quest = get_object_or_404(Question, id=request.POST.get('queid'))
     quest.likes.add(request.user)
@@ -35,7 +77,15 @@ def get_client_ip(request):
 
 
 def home(request):
-    quest = Question.objects.all()
+
+    if request.method == 'GET':
+        query = request.GET.get('query')
+        if query is None:
+            quest = Question.objects.all()
+        else:
+            quest = Question.objects.filter(title__icontains=query)
+    else:
+        quest = Question.objects.all()
     return render(request, 'Questions/home.html', {'quest': quest})
 
 
@@ -86,7 +136,9 @@ def Detailquestion(request, qid):
         IpModel.objects.create(ip=ip)
     quest.views.add(IpModel.objects.get(ip=ip))
     total_view = quest.total_view()
-    return render(request, 'Questions/DetailQuestion.html', {'quest': quest, 'tagsList': tagsList, 'total_like': total_like, 'total_view': total_view})
+    comments = quest.comment.all().order_by('-timestamp')
+
+    return render(request, 'Questions/DetailQuestion.html', {'quest': quest, 'tagsList': tagsList, 'total_like': total_like, 'total_view': total_view, 'comments': comments})
 
 # .........................................ANSWERS................................................
 
@@ -139,8 +191,17 @@ def Updateanswer(request, qid, aid):
 
 
 def listAnswer(request, qid):
-    qobj = Question.objects.get(id=qid)
-    qlist = Answer.objects.all().filter(Qid=qobj)
+    quest = Question.objects.get(id=qid)
+
+    if request.method == 'GET':
+        query = request.GET.get('query')
+        if query is None:
+            qlist = Answer.objects.filter(Qid=quest)
+        else:
+            qlist = Answer.objects.filter(
+                title__icontains=query).filter(Qid=quest)
+    else:
+        qlist = Answer.objects.filter(Qid=quest)
     return render(request, 'Questions/ListAnswer.html', {'qlist': qlist, 'qid': qid})
 
 
@@ -156,4 +217,5 @@ def Detailanswer(request, qid, aid):
         IpModel.objects.create(ip=ip)
     ans.views.add(IpModel.objects.get(ip=ip))
     total_view = ans.total_view()
-    return render(request, 'Questions/DetailAnswer.html', {'ans': ans, 'tagsList': tagsList, 'qid': qid, 'total_like': total_like, 'total_view': total_view})
+    comments = ans.comment.all().order_by('-timestamp')
+    return render(request, 'Questions/DetailAnswer.html', {'ans': ans, 'tagsList': tagsList, 'qid': qid, 'total_like': total_like, 'total_view': total_view, 'comments': comments})
