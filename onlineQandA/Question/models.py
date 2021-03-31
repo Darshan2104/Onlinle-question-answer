@@ -35,11 +35,11 @@ class Question(models.Model):
     title = models.TextField(null=True)
     description = RichTextField(null=True)
     Tags = TaggableManager(blank=True)
-    likes = models.ManyToManyField(User, related_name='que_like')
+    likes = models.ManyToManyField(User, related_name='que_like', blank=True)
     views = models.ManyToManyField(
         IpModel, related_name="que_views", blank=True)
     comment = models.ManyToManyField(
-        Comment, related_name='que_comment', null=True)
+        Comment, related_name='que_comment', null=True, blank=True)
 
     def total_like(self):
         return self.likes.count()
@@ -61,11 +61,11 @@ class Answer(models.Model):
     title = models.TextField(null=True)
     description = RichTextField(null=True)
     Tags = TaggableManager(blank=True)
-    likes = models.ManyToManyField(User, related_name='ans_like')
+    likes = models.ManyToManyField(User, related_name='ans_like', blank=True)
     views = models.ManyToManyField(
         IpModel, related_name="ans_views", blank=True)
     comment = models.ManyToManyField(
-        Comment, related_name='ans_comment', null=True)
+        Comment, related_name='ans_comment', null=True, blank=True)
 
     def __str__(self):
         return self.title

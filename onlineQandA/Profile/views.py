@@ -60,13 +60,28 @@ def profile(request):
     for tag in p_info.skill.all():
         tagsList.append(tag.name)
     # Count total star of all qustion by this user and send it
-    # quest = Question.objects.get(user=u_info)
-    # print()
+    quest = Question.objects.filter(postby=u_info)
+    ans = Answer.objects.filter(postby=u_info)
+    qlike = []
+    qview = []
+    alike = []
+    aview = []
+    for q in quest:
+        qlike.append(q.likes.count())
+        qview.append(q.views.count())
 
+    for a in ans:
+        alike.append(a.likes.count())
+        aview.append(a.views.count())
+    quests = zip(quest, qlike, qview)
+    anss = zip(ans, alike, aview)
     context = {
         'u_info': u_info,
         'p_info': p_info,
         'tagsList': tagsList,
-        # 'quest': quest
+        'quests': quests,
+        'anss': anss,
+        'quest': quest,
+        'ans': ans,
     }
     return render(request, 'Profile/viewprofile.html', context)

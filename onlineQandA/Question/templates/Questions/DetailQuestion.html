@@ -1,95 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detailed Question</title>
-</head>
-
-<body>
-    <h1>DETALED QUESTION</h1>
-
-    <form action="/update/{{quest.id}}">
-        <input type="submit" value="EDIT">
-    </form>
-
-    <a href="/">Home</a>
-    <a href="/ans/{{quest.id}}">ADD ANSWER</a>
-    <a href="/Listanswer/{{quest.id}}">LIST of Answers</a>
-    <br /><br /><br />
-    <hr>
-    <!-- LIKE -->
-    <form action="/DetailsQUE/{{quest.id}}/like" method="POST">
-        {% csrf_token %}
-        <button type="submit" name="queid" value="{{quest.id}}">Like</button>
-    </form>
-    <!-- Dislike -->
-    <form action="/DetailsQUE/{{quest.id}}/dislike" method="POST">
-        {% csrf_token %}
-        <button type="submit" name="queid" value="{{quest.id}}">disLike</button>
-    </form>
-    <!-- End like-dislike -->
-    <h3>Views : {{total_view}}</h3>
-    <h5>Likes : {{total_like}}</h5>
-    <h3>{{quest.title}}</h3>
-    <h5>{{quest.postdate}}</h5>
-    <h4>{{quest.description |safe}}</h4>
-    {%for l in tagsList%}
-    {{l}}
-    {%endfor%}
-    <hr>
-    <br>
-    <br>
-    <!-- comment section -->
-    <h2>Comment section</h2>
-    <form method="POST" action="/DetailsQUE/{{quest.id}}/comment">
-        {% csrf_token %}
-        <input type="text" name="body" placeholder="Comment here......">
-        <input type="submit" value="Comment" />
-    </form>
+{% extends "Questions/base.html" %}
+{% block content %}
 
 
-    {%for c in comments %}
 
-    {% if not c.parent %}
-    <br>
-    <hr>
-    <hr>
-    <!-- <h4>PostBy : {{c.postby}} | {{c.timestamp}}</h4> -->
-    <h3>{{c.body}}</h3>
-    <form method="POST" action="/DetailsQUE/{{quest.id}}/comment">
-        {% csrf_token %}
 
-        <input type="hidden" name="parentid" value="{{c.id}}">
-        <input type="text" name="body" placeholder="Main Comment from here......">
-        <input type="submit" value="Reply" />
-    </form>
-    {%endif%}
+<div class="row">
+    <div class="col-sm-8">
+        <div class="container">
+            <h1><b> {{quest.title}} </b></h1>
+            <hr>
+            <!-- LIKE -->
+            <form action="/DetailsQUE/{{quest.id}}/like" method="POST">
+                {% csrf_token %}
+                <button type="submit" name="queid" value="{{quest.id}}">Like</button>
+            </form>
+            <!-- Dislike -->
+            <form action="/DetailsQUE/{{quest.id}}/dislike" method="POST">
+                {% csrf_token %}
+                <button type="submit" name="queid" value="{{quest.id}}">disLike</button>
+            </form>
+            <!-- End like-dislike -->
 
-    <!-- reply to comment -->
+            <h3>Views : {{total_view}}</h3>
+            <h5>Likes : {{total_like}}</h5>
 
-    {% for reply in c.replies.all %}
-    <hr>
-    <!-- do indentation  -->
-    <!-- <h6>{{reply.postby}} | {{reply.timestamp}}</h6> -->
-    <h5> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        Reply to<a href="#"> @{{c.postby}} : </a> {{reply.body}}
-        <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; by <a
-            href="#">@{{reply.postby}}</a>
-    </h5>
-    <form method="POST" action="/DetailsQUE/{{quest.id}}/comment">
-        {% csrf_token %}
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="hidden" name="parentid" value="{{c.id}}">
-        <input type="text" name="body" placeholder="Child from here......">
-        <input type="submit" value="Reply" />
-    </form>
-    {%endfor%}
+            <h3></h3>
+            <h5>{{quest.postdate}}</h5>
+            <h4>{{quest.description |safe}}</h4>
+            {%for l in tagsList%}
+            {{l}}
+            {%endfor%}
+            <hr>
+            <br>
+            <!-- .........................comment section............................... -->
+            <h2>Comment section</h2>
+            <form method="POST" action="/DetailsQUE/{{quest.id}}/comment">
+                {% csrf_token %}
+                <input type="text" name="body" placeholder="Comment here......">
+                <input type="submit" value="Comment" />
+            </form>
 
-    {%endfor%}
 
-</body>
+            {%for c in comments %}
+            {% if not c.parent %}
+            <br>
+            <hr>
+            <hr>
+            <!-- <h4>PostBy : {{c.postby}} | {{c.timestamp}}</h4> -->
+            <h3>{{c.body}}</h3>
+            <form method="POST" action="/DetailsQUE/{{quest.id}}/comment">
+                {% csrf_token %}
 
-</html>
+                <input type="hidden" name="parentid" value="{{c.id}}">
+                <input type="text" name="body" placeholder="Main Comment from here......">
+                <input type="submit" value="Reply" />
+            </form>
+            {%endif%}
+
+            <!-- reply to comment -->
+            {% for reply in c.replies.all %}
+            <hr>
+            <!-- do indentation  -->
+            <!-- <h6>{{reply.postby}} | {{reply.timestamp}}</h6> -->
+            <h5> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Reply to<a href="#"> @{{c.postby}} : </a> {{reply.body}}
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; by <a
+                    href="#">@{{reply.postby}}</a>
+            </h5>
+            <form method="POST" action="/DetailsQUE/{{quest.id}}/comment">
+                {% csrf_token %}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="hidden" name="parentid" value="{{c.id}}">
+                <input type="text" name="body" placeholder="Child from here......">
+                <input type="submit" value="Reply" />
+            </form>
+            {%endfor%}
+
+            {%endfor%}
+
+
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <br>
+        {%if request.user == quest.postby%}
+        <form action="/update/{{quest.id}}">
+            <input type="submit" class="btn btn-danger btn-lg" value="EDIT">
+        </form>
+        {%endif%}
+        <br>
+        <a href="/ans/{{quest.id}}" class="btn btn-dark btn-lg btn-block"><b> Add Answer </b></a>
+        <br>
+        <a href="/Listanswer/{{quest.id}}" class="btn btn-info btn-lg btn-block"><b> Look At Answers</b></a>
+        <br>
+        <hr class="my-2">
+
+        <h5 style="text-align:center"><b> Total Answers</b> </h5>
+        <h3 style="text-align:center"> {{totalans}}</h3>
+        <hr class="my-2">
+    </div>
+</div>
+
+{% endblock content %}

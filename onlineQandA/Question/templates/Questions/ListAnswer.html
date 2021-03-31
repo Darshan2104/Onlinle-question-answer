@@ -1,31 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "Questions/base.html" %}
+{% block content %}
+<style>
+    /* USER LIST TABLE */
+    .user-list tbody td>img {
+        position: relative;
+        max-width: 100px;
+        float: left;
+        margin-right: 15px;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Answers</title>
-</head>
+    .user-list tbody td .user-link {
+        display: block;
+        font-size: 1.25em;
+        padding-top: 3px;
+        margin-left: 60px;
+    }
 
-<body>
+    /* TABLES */
+    .table tbody>tr>td {
+        font-size: 0.875em;
+        background: #f5f5f5;
+        border-top: 10px solid #fff;
+        vertical-align: middle;
+        padding: 12px 8px;
+    }
 
-    <a href="{% url 'Home' %}">Home</a>
-    <a href="/DetailsQUE/{{qid}}">Back to Question</a>
+    .table tbody>tr>td:first-child,
+    .table thead>tr>th:first-child {
+        padding-left: 20px;
+        padding-top: 20px;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-2">
+        <a href="/DetailsQUE/{{qid}}">Back to Question</a>
+    </div>
+    <div class="col-sm-8">
+        <form class="form-inline my-2 my-lg-2" action="/Listanswer/{{qid}}" method="GET">
 
-    <form action="/Listanswer/{{qid}}" method="GET">
-        <br /><br />
-        <input type="search" name="query" id="query" placeholder="Search Answer here.....">
-        <input type="submit" value="Search">
-    </form>
-    <h1>LIST OF Answers of Question {{qid}}</h1>
-    <hr>
-    {% for q in qlist %}
-    <a href="/Listanswer/{{qid}}/DetailsANS/{{q.id}}">{{q.title}}</a>
-    <br />
-    <hr>
-    {% endfor %}
+            <input type="search" name="query" id="query" class="form-control mr-sm-2 col-sm-6"
+                placeholder="Search answers here.....">
+            <input type="submit" class="btn btn-primary col-sm-3" value="Search">
+        </form>
+    </div>
 
-</body>
+</div>
+<div class="row">
+    <div class="col-sm-8">
+        <hr class="my-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 ">
+                    <h3 class="display-5 "><b> List of Answers </b></h3>
+                </div>
+                <div class="col-sm-6 d-flex justify-content-end">
+                    <div> Sort by :
+                        <div class="btn-group btn-sm">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                Select Category
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="/latest/{{qid}}">Latest</a>
+                                <a class="dropdown-item" href="/mostvoted/{{qid}}">Most voted</a>
+                                <a class="dropdown-item" href="/mostviewed/{{qid}}">Most viewed</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="my-2">
 
-</html>
+        <div id="myDIV">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="main-box clearfix">
+                            <div class="table-responsive">
+                                <table class="table user-list">
+                                    <tbody>
+                                        {% for q,a,b in mix %}
+                                        <tr>
+                                            <td>
+                                                <img src={{q.postby.profile.image.url}} alt="pic">
+                                                <a href="/Listanswer/{{qid}}/DetailsANS/{{q.id}}"
+                                                    class="user-link"><label><b>{{q.title}}</b></label></a>
+                                                <!-- remaining -->
+                                                PostBy :<a href="#" style="text-decoration: none; color:green"><span
+                                                        class="user-subhead"><b>{{q.postby}}</b></span></a>
+                                                at <span>{{q.postdate}}</span>
+                                            </td>
+                                            <td style="width: 10%;">
+                                                <i class="fa fa-thumbs-up"> <b> {{a}}</b></i>
+                                            </td>
+                                            <td style="width: 7%;">
+                                                <i class="fa fa-eye"> <b> {{b}}</b></i>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <br>
+        <a href="/ans/{{qid}}" class="btn btn-dark btn-lg btn-block"><b> Add Own Answer </b></a>
+        <br>
+        <hr class="my-2">
+        <h5 style="text-align:center"><b> Total Answers</b> </h5>
+        <h3 style="text-align:center"> {{totalans}}</h3>
+        <hr class="my-2">
+    </div>
+</div>
+{% endblock content %}

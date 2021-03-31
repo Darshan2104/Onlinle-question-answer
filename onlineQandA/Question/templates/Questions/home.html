@@ -1,41 +1,139 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "Questions/base.html" %}
+{% block content %}
+<!-- Main content -->
+<style>
+    /* USER LIST TABLE */
+    .user-list tbody td>img {
+        position: relative;
+        max-width: 100px;
+        float: left;
+        margin-right: 15px;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+    .user-list tbody td .user-link {
+        display: block;
+        font-size: 1.25em;
+        padding-top: 3px;
+        margin-left: 60px;
+    }
 
-<body>
-    <h1>Hello guys, Welcome</h1>
-    {% if user.is_authenticated %}
-    <a href="{% url 'logout' %}">Logout</a>
-    {% else %}
-    <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'register' %}">Register</a>
-    {% endif %}
-    <a href="{% url 'Home' %}">Home</a>
-    {% if user.is_authenticated %}
-    <a href="{% url 'profile' %}">Profile</a>
-    <a href="{% url 'Ask-Question' %}">Add Question</a>
-    {% endif %}
+    /* TABLES */
+    .table tbody>tr>td {
+        font-size: 0.875em;
+        background: #f5f5f5;
+        border-top: 10px solid #fff;
+        vertical-align: middle;
+        padding: 12px 8px;
+    }
 
-    <form action="/" method="GET">
-        <br /><br />
-        <input type="search" name="query" id="query" placeholder="Search Question here.....">
-        <input type="submit" value="Search">
-    </form>
-    <br />
-    <br />
-    <h1>LIST OF QUESTIONS</h1>
-    <hr>
+    .table tbody>tr>td:first-child,
+    .table thead>tr>th:first-child {
+        padding-left: 20px;
+        padding-top: 20px;
+    }
+</style>
+<div class="container-fluid">
 
-    {% for q in quest %}
-    <a href="/DetailsQUE/{{q.id}}">{{q.title}}</a>
-    <br />
-    <hr>
-    {% endfor %}
-</body>
+    <div class="row">
+        <div class="col-sm-2 p-4 mt-5">
+            <div class="container p-1">
+                <!-- first section -->
+                <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-light rounded">
+                    <a href="/" class="btn "><i class="fa fa-tags"></i> <b>Tag</b></a>
+                </div>
+                <!-- <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-white rounded">
+                        <a href="categories.html" class="btn"><i class="fa fa-list"></i> Category</a>
+                    </div> -->
+                <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-light rounded">
+                    <a href="/" class="btn"><i class="fa fa-users"></i> <b>Peopel</b></a>
+                </div>
+                <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-light rounded">
+                    <a href="/" class="btn"> <i class="fa fa-wrench"></i> <b>Help</b> </a>
+                </div>
+            </div>
 
-</html>
+        </div>
+        <div class="col-sm-7">
+            <!-- In Center two row -->
+            <!-- top on center -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 ">
+                        <h3 class="display-5 "> List of Questions</h3>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end">
+                        <div> Sort by :
+                            <div class="btn-group btn-sm">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    Select Category
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="/latest">Latest</a>
+                                    <a class="dropdown-item" href="/mostvoted">Most voted</a>
+                                    <a class="dropdown-item" href="/mostviewed">Most viewed</a>
+                                    <a class="dropdown-item" href="/unanswered">UnAnswered</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-2">
+            <div id="myDIV">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="main-box clearfix">
+                                <div class="table-responsive">
+                                    <table class="table user-list">
+                                        <tbody>
+                                            {% for q,a,b in mix %}
+                                            <tr>
+                                                <td>
+                                                    <img src={{q.postby.profile.image.url}} alt="pic">
+                                                    <a href="/DetailsQUE/{{q.id}}"
+                                                        class="user-link"><label><b>{{q.title}}</b></label></a>
+                                                    <!-- remaining -->
+                                                    PostBy :<a href="#" style="text-decoration: none; color:green"><span
+                                                            class="user-subhead"><b>{{q.postby}}</b></span></a>
+                                                    at <span><b>{{q.postdate}}</b></span>
+                                                </td>
+                                                <td style="width: 10%;">
+                                                    <i class="fa fa-thumbs-up"> <b> {{a}}</b></i>
+                                                </td>
+                                                <td style="width: 7%;">
+                                                    <i class="fa fa-eye"> <b> {{b}}</b></i>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <a class="btn btn-dark btn-lg btn-block" href="{% url 'Ask-Question' %}"><i class="fa fa-plus"></i><b>Ask
+                    Question</b></a>
+            <br>
+            <hr>
+            <h5 style="text-align:center"><b> Total User</b></h5>
+            <h3 style="text-align:center"> {{totaluser}}</h3>
+            <hr>
+            <h5 style="text-align:center"><b> Total Question</b> </h5>
+            <h3 style="text-align:center"> {{totalquestions}}</h3>
+            <hr>
+            <h5 style="text-align:center"><b> Total Answers</b> </h5>
+            <h3 style="text-align:center"> {{totalanswers}}</h3>
+            <hr>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

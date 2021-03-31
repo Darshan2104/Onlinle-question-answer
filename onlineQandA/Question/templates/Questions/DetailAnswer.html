@@ -1,85 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "Questions/base.html" %}
+{% block content %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detailed Question</title>
-</head>
+<a href="/Listanswer/{{qid}}">LIST of Answers</a>
+<h1>{{ans.title}}</h1>
 
-<body>
-    <h1>DETALED Answer</h1>
+{%if request.user == ans.postby%}
+<form action="/Listanswer/{{qid}}/update/{{ans.id}}">
+    <input type="submit" value="EDIT">
+</form>
+{%endif%}
 
+<a href="/DetailsQUE/{{ans.Qid.id}}">Back to Question</a>
+<br /><br /><br />
+<hr />
+<form action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/like" method="POST">
+    {% csrf_token %}
+    <button type="submit" name="ansid" value="{{ans.id}}">Like</button>
+</form>
+<form action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/dislike" method="POST">
+    {% csrf_token %}
+    <button type="submit" name="ansid" value="{{ans.id}}">disLike</button>
+</form>
+<h5>View :{{total_view}}</h5>
+<h5>Likes : {{total_like}}</h5>
+<h3></h3>
+<h5>{{ans.postdate}}</h5>
+<h4>{{ans.description |safe}}</h4>
+{%for l in tagsList%}
+{{l}}
+{%endfor%}
+<hr />
 
-    <form action="/Listanswer/{{qid}}/update/{{ans.id}}">
-        <input type="submit" value="EDIT">
-    </form>
-    <a href="{% url 'Home' %}">Home</a>
-    <a href="/Listanswer/{{qid}}">LIST of Answers</a>
-    <a href="/DetailsQUE/{{ans.Qid.id}}">Back to Question</a>
-    <br /><br /><br />
-    <hr />
-    <form action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/like" method="POST">
-        {% csrf_token %}
-        <button type="submit" name="ansid" value="{{ans.id}}">Like</button>
-    </form>
-    <form action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/dislike" method="POST">
-        {% csrf_token %}
-        <button type="submit" name="ansid" value="{{ans.id}}">disLike</button>
-    </form>
-    <h5>View :{{total_view}}</h5>
-    <h5>Likes : {{total_like}}</h5>
-    <h3>{{ans.title}}</h3>
-    <h5>{{ans.postdate}}</h5>
-    <h4>{{ans.description |safe}}</h4>
-    {%for l in tagsList%}
-    {{l}}
-    {%endfor%}
-    <hr />
-
-    <!-- Comment section -->
-    <h2>Comment section</h2>
-    <form method="POST" action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/comment">
-        {% csrf_token %}
-        <input type="text" name="body" placeholder="Comment here......">
-        <input type="submit" value="Comment" />
-    </form>
+<!-- Comment section -->
+<h2>Comment section</h2>
+<form method="POST" action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/comment">
+    {% csrf_token %}
+    <input type="text" name="body" placeholder="Comment here......">
+    <input type="submit" value="Comment" />
+</form>
 
 
-    {%for c in comments %}
+{%for c in comments %}
 
-    {% if not c.parent %}
-    <br>
-    <hr>
-    <hr>
-    <!-- <h4>PostBy : {{c.postby}} | {{c.timestamp}}</h4> -->
-    <h3>{{c.body}}</h3>
-    <form method="POST" action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/comment">
-        {% csrf_token %}
-        <input type="hidden" name="parentid" value="{{c.id}}">
-        <input type="text" name="body" placeholder="Main Comment from here......">
-        <input type="submit" value="Reply" />
-    </form>
-    {%endif%}
-    <!-- reply to comment -->
-    {% for reply in c.replies.all %}
-    <hr>
-    <!-- do indentation  -->
-    <!-- <h6>{{reply.postby}} | {{reply.timestamp}}</h6> -->
-    <h5> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="#">@{{reply.parent.postby}}</a> {{reply.body}}
-    </h5>
+{% if not c.parent %}
+<br>
+<hr>
+<hr>
+<!-- <h4>PostBy : {{c.postby}} | {{c.timestamp}}</h4> -->
+<h3>{{c.body}}</h3>
+<form method="POST" action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/comment">
+    {% csrf_token %}
+    <input type="hidden" name="parentid" value="{{c.id}}">
+    <input type="text" name="body" placeholder="Main Comment from here......">
+    <input type="submit" value="Reply" />
+</form>
+{%endif%}
+<!-- reply to comment -->
+{% for reply in c.replies.all %}
+<hr>
+<!-- do indentation  -->
+<!-- <h6>{{reply.postby}} | {{reply.timestamp}}</h6> -->
+<h5> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#">@{{reply.parent.postby}}</a> {{reply.body}}
+</h5>
 
-    <form method="POST" action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/comment">
-        {% csrf_token %}
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="hidden" name="parentid" value="{{c.id}}">
-        <input type="text" name="body" placeholder="Child from here......">
-        <input type="submit" value="Reply" />
-    </form>
-    {%endfor%}
+<form method="POST" action="/Listanswer/{{qid}}/DetailsANS/{{ans.id}}/comment">
+    {% csrf_token %}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="hidden" name="parentid" value="{{c.id}}">
+    <input type="text" name="body" placeholder="Child from here......">
+    <input type="submit" value="Reply" />
+</form>
+{%endfor%}
 
-    {%endfor%}
-</body>
+{%endfor%}
 
-</html>
+{% endblock content %}

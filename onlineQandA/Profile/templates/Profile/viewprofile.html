@@ -2,10 +2,24 @@
 <html lang="en">
 
 <head>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- button with icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="my_jquery_functions.js"></script>
     <style>
         .emp-profile {
             padding: 3%;
@@ -20,7 +34,7 @@
         }
 
         .profile-img img {
-            width: 70%;
+            width: 90%;
             height: 100%;
         }
 
@@ -92,7 +106,7 @@
         }
 
         .profile-work p {
-            font-size: 12px;
+            font-size: 16px;
             color: #818182;
             font-weight: 600;
             margin-top: 10%;
@@ -112,146 +126,197 @@
         .profile-tab label {
             font-weight: 600;
         }
-
-        .profile-tab p {
-            font-weight: 600;
-            color: #0062cc;
-        }
     </style>
 
     <title>User Profile</title>
 </head>
 
 <body>
-    <div class="container emp-profile">
+    <div class="header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow p-2 rounded">
+            <div class="container">
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="profile-img">
-                    <img src="{{p_info.image.url}}" alt="User Profile pic" />
-                    <div class="file btn btn-lg btn-primary">
-                        Change Photo
-                        <input type="file" name="file" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="profile-head">
-                    <h4>
-                        {{u_info.first_name}} {{u_info.last_name}}
-                    </h4>
-                    <h6>
-                        {{p_info.education}}
-                    </h6>
-                    <p class="proile-rating">
-                        Total Star : <span>12</span>
-                    </p>
+                <a class="navbar-brand" href="{% url 'Home' %}">
+                    <img src="/media/logo1.png" width="25" height="30" class="d-inline-block align-top " alt=""
+                        loading="lazy"><b>Question</b>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home1" role="tab"
-                                aria-controls="home" aria-selected="true">Question Asked</a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="btn" href="{% url 'Home' %}"><i class="fa fa-home"></i> <b>Home</b> </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#p1" role="tab"
-                                aria-controls="profile" aria-selected="false">Answer Provided</a>
+                            <a href="{% url 'profile' %}" class="btn"><i class="fa fa-user"></i> <b>Profile</b> </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{% url 'Ask-Question' %}" class="btn"><i class="fa fa-plus"></i>
+                                <b>Ask-Question</b></a>
+                        </li>
+
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="btn" href="{% url 'logout' %}"><i class="fa fa-flag"></i> <b>Logout</b></a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="btn" href="{% url 'login' %}"><i class="fa fa-flag"></i> <b>Login</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'register' %}" class="btn">
+                                <i class="fa fa-pencil"></i> <b>Registration</b> </a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
-            </div>
-            <div class="col-md-2">
-                <form action="/profile/edit" method="GET">
-                    {%csrf_token%}
-                    <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile" />
+                <!-- Searching -->
+                <form class="form-inline my-2 my-lg-0" action="/" method="GET">
+                    <input type="search" name="query" class="form-control mr-sm-2" id="query"
+                        placeholder="Search Question" aria-label="Search">
+                    <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><b>Search</b> </button>
                 </form>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="profile-work">
+        </nav>
+    </div>
 
-                    <p>USERNAME</p>
-                    <h6>{{u_info.username}}</h6>
-                    <p>GENDER</p>
-                    <h6>{{p_info.gender}}</h6>
-                    <p>SKILLS</p>
-                    {%for l in tagsList%}
-                    <h6>{{l}}</h6>
-                    {%endfor%}
-                    <p>ADDRESS</p>
-                    <h6>{{p_info.Address}}</h6>
+    <div class="jumbotron">
+        <div class="container emp-profile">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-img">
+                        <img src="{{p_info.image.url}}" alt="User Profile pic" />
+                        <!-- <div class="file btn btn-lg btn-primary">
+                        Change Photo
+                        <input type="file" name="file" />
+                    </div> -->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="profile-head">
+                        <h4>
+                            {{u_info.first_name}} {{u_info.last_name}}
+                        </h4>
+                        <h6>
+                            {{p_info.education}}
+                        </h6>
+                        <p class="proile-rating">
+                        </p>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#p1" role="tab"
+                                    aria-controls="profile" aria-selected="true">Bio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="home-tab" data-toggle="tab" href="#home1" role="tab"
+                                    aria-controls="home" aria-selected="false">Question Asked</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="home-tab" data-toggle="tab" href="#home2" role="tab"
+                                    aria-controls="home" aria-selected="false">Answer Provided</a>
+                            </li>
 
-                    <p>CONTECT INFO</p>
-                    <h6>{{u_info.email}}</h6>
-                    <p>ABOUT</p>
-                    <h6>{{p_info.about}}</h6>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <form action="/profile/edit" method="GET">
+                        {%csrf_token%}
+                        <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile" />
+                    </form>
                 </div>
             </div>
-            <div class="col-md-8">
-                <div class="tab-content profile-tab" id="myTabContent">
-                    <div class="tab-pane fade show active" id="home1" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Question 1</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>what is computer science ?</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Question 1</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>what is computer science ?</p>
-                            </div>
-                        </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-work">
+
+
+                        <p>Total Questions</p>
+                        <h6>{{quest|length}}</h6>
+                        <p>Total Answers</p>
+                        <h6>{{ans|length}}</h6>
+                        <p>SKILLS</p>
+                        {%for l in tagsList%}
+                        <h6>{{l}}</h6>
+                        {%endfor%}
+
+
                     </div>
-                    <div class="tab-pane fade" id="p1" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Experience</label>
+                </div>
+                <div class="col-md-8">
+                    <div class="tab-content profile-tab" id="myTabContent">
+                        <!-- Questions -->
+                        <div class="tab-pane fade show" id="home1" role="tabpanel" aria-labelledby="home-tab">
+                            {%for q,like,view in quests %}
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <a href="/DetailsQUE/{{q.id}}" target="blank"><label>{{q.title}}</label></a>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fa fa-thumbs-up"><b> {{like}}</b></i>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fa fa-eye"><b> {{view}}</b></i>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <p>Expert</p>
-                            </div>
+                            {%endfor%}
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Hourly Rate</label>
+                        <!-- Answer -->
+                        <div class="tab-pane fade show " id="home2" role="tabpanel" aria-labelledby="home-tab">
+                            {%for a,like,view in anss%}
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <a href="/Listanswer/{{a.Qid.id}}/DetailsANS/{{a.id}}"
+                                        target="blank"><label>{{a.title}}</label></a>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fa fa-thumbs-up"><b> {{like}}</b></i>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fa fa-eye"><b> {{view}}</b></i>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <p>10$/hr</p>
-                            </div>
+                            {%endfor%}
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Total Projects</label>
+                        <!-- Bio -->
+                        <div class="tab-pane fade show active" id="p1" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>USERNAME</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{u_info.username}}</p>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <p>230</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>GENDER</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{p_info.gender}}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>English Level</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>ADDRESS</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{p_info.Address}}</p>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <p>Expert</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>CONTECT INFO</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{u_info.email}}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Availability</label>
-                            </div>
-                            <div class="col-md-6">
-                                <p>6 months</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label>Your Bio</label><br />
-                                <p>Your detail description</p>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>ABOUT</label><br />
+                                    <p>{{p_info.about}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -259,6 +324,8 @@
             </div>
         </div>
     </div>
+
+
 </body>
 
 </html>

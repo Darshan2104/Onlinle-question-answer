@@ -31,4 +31,13 @@ urlpatterns = [
          name='Detail-Question-comment'),
     path('Listanswer/<int:qid>/DetailsANS/<int:aid>/comment', views.AnswerComment,
          name='Detail-Answer-comment'),
+    path('latest', views.Latest, name='Latest-questions'),
+    path('mostvoted', views.Mostvoted, name='Mostvotted-questions'),
+    path('unanswered', views.Unanswered, name='Unanswered-questions'),
+    path('mostviewed', views.Mostviwed, name='Mostviwed-questions'),
+
+    path('latest/<int:qid>', views.Latestans, name='Latest-answers'),
+    path('mostvoted/<int:qid>', views.Mostvotedans, name='Mostvotted-answers'),
+    path('mostviewed/<int:qid>', views.Mostviwedans, name='Mostviwed-answers'),
+
 ]

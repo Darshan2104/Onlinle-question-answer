@@ -13,7 +13,7 @@ import datetime
 # Create your views here.
 
 # Comment
-
+@login_required
 def QuestionComment(request, qid):
     quest = get_object_or_404(Question, id=qid)
     obj = Comment.objects.create(postby=request.user)
@@ -32,6 +32,7 @@ def QuestionComment(request, qid):
 # AnswerComment
 
 
+@login_required
 def AnswerComment(request, qid, aid):
     ans = get_object_or_404(Answer, id=aid)
     obj = Comment.objects.create(postby=request.user)
@@ -53,16 +54,85 @@ def AnswerComment(request, qid, aid):
 # Like-Dislike
 
 
+@login_required
 def Questionlike(request, qid):
     quest = get_object_or_404(Question, id=request.POST.get('queid'))
     quest.likes.add(request.user)
     return HttpResponseRedirect(reverse('Detail-Question', args=[str(qid)]))
 
 
+@login_required
 def Questiondislike(request, qid):
     quest = get_object_or_404(Question, id=request.POST.get('queid'))
     quest.likes.remove(request.user)
     return HttpResponseRedirect(reverse('Detail-Question', args=[str(qid)]))
+
+
+def Latest(request):
+    quest = Question.objects.order_by('-id')
+    qlike = []
+    qview = []
+    for q in quest:
+        qlike.append(q.likes.count())
+        qview.append(q.views.count())
+
+    mix = zip(quest, qlike, qview)
+    totalquestions = quest.count()
+    totaluser = Profile.objects.all().count()
+    return render(request, 'Questions/home.html', {'mix': mix, 'totalquestions': totalquestions, 'totaluser': totaluser})
+
+
+def Mostvoted(request):
+    quest = Question.objects.all()
+    qlike = []
+    qview = []
+    for q in quest:
+        qlike.append(q.likes.count())
+        qview.append(q.views.count())
+    print(quest)
+    zipped = zip(quest, qlike, qview)
+    mix = sorted(zipped, key=lambda x: -x[1])
+    totalquestions = quest.count()
+    totaluser = Profile.objects.all().count()
+    return render(request, 'Questions/home.html', {'mix': mix, 'totalquestions': totalquestions, 'totaluser': totaluser})
+
+
+def Mostviwed(request):
+    quest = Question.objects.all()
+    qlike = []
+    qview = []
+    for q in quest:
+        qlike.append(q.likes.count())
+        qview.append(q.views.count())
+    print(quest)
+    zipped = zip(quest, qlike, qview)
+    mix = sorted(zipped, key=lambda x: -x[2])
+    totalquestions = quest.count()
+    totaluser = Profile.objects.all().count()
+    return render(request, 'Questions/home.html', {'mix': mix, 'totalquestions': totalquestions, 'totaluser': totaluser})
+
+
+def Unanswered(request):
+    quest = Question.objects.all()
+    qlike = []
+    qview = []
+    qlist = []
+    ans = Answer.objects.all()
+
+    for q in quest:
+        qlist.append(q)
+
+    for a in ans:
+        if a.Qid in qlist:
+            qlist.remove(a.Qid)
+    print(qlist)
+    for q in qlist:
+        qlike.append(q.likes.count())
+        qview.append(q.views.count())
+    mix = zip(qlist, qlike, qview)
+    totalquestions = quest.count()
+    totaluser = Profile.objects.all().count()
+    return render(request, 'Questions/home.html', {'mix': mix, 'totalquestions': totalquestions, 'totaluser': totaluser})
 
 # get ip address
 
@@ -77,7 +147,6 @@ def get_client_ip(request):
 
 
 def home(request):
-
     if request.method == 'GET':
         query = request.GET.get('query')
         if query is None:
@@ -86,9 +155,21 @@ def home(request):
             quest = Question.objects.filter(title__icontains=query)
     else:
         quest = Question.objects.all()
-    return render(request, 'Questions/home.html', {'quest': quest})
+
+    qlike = []
+    qview = []
+    for q in quest:
+        qlike.append(q.likes.count())
+        qview.append(q.views.count())
+
+    mix = zip(quest, qlike, qview)
+    totalquestions = quest.count()
+    totaluser = Profile.objects.all().count()
+    totalanswers = Answer.objects.all().count()
+    return render(request, 'Questions/home.html', {'quest': quest, 'totaluser': totaluser, 'totalquestions': totalquestions, 'totalanswers': totalanswers, 'mix': mix})
 
 
+@login_required
 def Askquestion(request):
     if request.method == 'POST':
         q_form = Questiondetails(request.POST, request.FILES)
@@ -105,6 +186,7 @@ def Askquestion(request):
         return render(request, 'Questions/AskQuestion.html', {'q_form': q_form})
 
 
+@login_required
 def Updatequestion(request, qid):
     quest = Question.objects.get(id=qid)
     # tagsList = []
@@ -137,24 +219,28 @@ def Detailquestion(request, qid):
     quest.views.add(IpModel.objects.get(ip=ip))
     total_view = quest.total_view()
     comments = quest.comment.all().order_by('-timestamp')
-
-    return render(request, 'Questions/DetailQuestion.html', {'quest': quest, 'tagsList': tagsList, 'total_like': total_like, 'total_view': total_view, 'comments': comments})
+    alist = Answer.objects.filter(Qid=qid)
+    totalans = alist.count()
+    return render(request, 'Questions/DetailQuestion.html', {'quest': quest, 'tagsList': tagsList, 'total_like': total_like, 'total_view': total_view, 'totalans': totalans, 'comments': comments})
 
 # .........................................ANSWERS................................................
 
 
+@login_required
 def Answerlike(request, qid, aid):
     ans = get_object_or_404(Answer, id=request.POST.get('ansid'))
     ans.likes.add(request.user)
     return HttpResponseRedirect(reverse('Detail-Answer', args=[str(qid), str(aid)]))
 
 
+@login_required
 def Answerdislike(request, qid, aid):
     ans = get_object_or_404(Answer, id=request.POST.get('ansid'))
     ans.likes.remove(request.user)
     return HttpResponseRedirect(reverse('Detail-Answer', args=[str(qid), str(aid)]))
 
 
+@login_required
 def Addanswer(request, qid):
     if request.method == 'POST':
         a_form = Answerdetails(request.POST, request.FILES)
@@ -173,6 +259,7 @@ def Addanswer(request, qid):
         return render(request, 'Questions/AddAnswer.html', {'a_form': a_form})
 
 
+@login_required
 def Updateanswer(request, qid, aid):
     ans = Answer.objects.get(id=aid)
     # quest =Question.objects.get(id=qid)
@@ -196,13 +283,22 @@ def listAnswer(request, qid):
     if request.method == 'GET':
         query = request.GET.get('query')
         if query is None:
-            qlist = Answer.objects.filter(Qid=quest)
+            ans = Answer.objects.filter(Qid=quest)
         else:
-            qlist = Answer.objects.filter(
+            ans = Answer.objects.filter(
                 title__icontains=query).filter(Qid=quest)
     else:
-        qlist = Answer.objects.filter(Qid=quest)
-    return render(request, 'Questions/ListAnswer.html', {'qlist': qlist, 'qid': qid})
+        ans = Answer.objects.filter(Qid=quest)
+
+    alike = []
+    aview = []
+    for a in ans:
+        alike.append(a.likes.count())
+        aview.append(a.views.count())
+
+    mix = zip(ans, alike, aview)
+    totalans = ans.count()
+    return render(request, 'Questions/ListAnswer.html', {'qid': qid, 'mix': mix, 'totalans': totalans})
 
 
 def Detailanswer(request, qid, aid):
@@ -219,3 +315,47 @@ def Detailanswer(request, qid, aid):
     total_view = ans.total_view()
     comments = ans.comment.all().order_by('-timestamp')
     return render(request, 'Questions/DetailAnswer.html', {'ans': ans, 'tagsList': tagsList, 'qid': qid, 'total_like': total_like, 'total_view': total_view, 'comments': comments})
+
+
+def Latestans(request, qid):
+
+    temp = Answer.objects.filter(Qid=qid)
+    ans = temp.order_by('-id')
+    alike = []
+    aview = []
+    for a in ans:
+        alike.append(a.likes.count())
+        aview.append(a.views.count())
+
+    mix = zip(ans, alike, aview)
+    totalans = ans.count()
+    return render(request, 'Questions/ListAnswer.html', {'mix': mix, 'qid': qid, 'totalans': totalans})
+
+
+def Mostvotedans(request, qid):
+
+    temp = Answer.objects.filter(Qid=qid)
+    ans = temp.order_by('-id')
+    alike = []
+    aview = []
+    for a in ans:
+        alike.append(a.likes.count())
+        aview.append(a.views.count())
+    zipped = zip(ans, alike, aview)
+    mix = sorted(zipped, key=lambda x: -x[1])
+    totalans = ans.count()
+    return render(request, 'Questions/ListAnswer.html', {'mix': mix, 'qid': qid, 'totalans': totalans})
+
+
+def Mostviwedans(request, qid):
+    temp = Answer.objects.filter(Qid=qid)
+    ans = temp.order_by('-id')
+    alike = []
+    aview = []
+    for a in ans:
+        alike.append(a.likes.count())
+        aview.append(a.views.count())
+    zipped = zip(ans, alike, aview)
+    mix = sorted(zipped, key=lambda x: -x[2])
+    totalans = ans.count()
+    return render(request, 'Questions/ListAnswer.html', {'mix': mix, 'qid': qid, 'totalans': totalans})
