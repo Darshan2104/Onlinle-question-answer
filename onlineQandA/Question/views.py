@@ -221,7 +221,8 @@ def Detailquestion(request, qid):
     comments = quest.comment.all().order_by('-timestamp')
     alist = Answer.objects.filter(Qid=qid)
     totalans = alist.count()
-    return render(request, 'Questions/DetailQuestion.html', {'quest': quest, 'tagsList': tagsList, 'total_like': total_like, 'total_view': total_view, 'totalans': totalans, 'comments': comments})
+    totalcomt = comments.count()
+    return render(request, 'Questions/DetailQuestion.html', {'quest': quest, 'tagsList': tagsList, 'total_like': total_like, 'total_view': total_view, 'totalans': totalans, 'comments': comments, 'totalcomt': totalcomt})
 
 # .........................................ANSWERS................................................
 
@@ -314,7 +315,8 @@ def Detailanswer(request, qid, aid):
     ans.views.add(IpModel.objects.get(ip=ip))
     total_view = ans.total_view()
     comments = ans.comment.all().order_by('-timestamp')
-    return render(request, 'Questions/DetailAnswer.html', {'ans': ans, 'tagsList': tagsList, 'qid': qid, 'total_like': total_like, 'total_view': total_view, 'comments': comments})
+    totalcomt = comments.count()
+    return render(request, 'Questions/DetailAnswer.html', {'ans': ans, 'tagsList': tagsList, 'qid': qid, 'total_like': total_like, 'total_view': total_view, 'comments': comments, 'totalcomt': totalcomt})
 
 
 def Latestans(request, qid):
@@ -359,3 +361,7 @@ def Mostviwedans(request, qid):
     mix = sorted(zipped, key=lambda x: -x[2])
     totalans = ans.count()
     return render(request, 'Questions/ListAnswer.html', {'mix': mix, 'qid': qid, 'totalans': totalans})
+
+
+def comingsoon(request):
+    return render(request, 'Question/commingsoon.html')

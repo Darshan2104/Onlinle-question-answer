@@ -16,7 +16,7 @@ class IpModel(models.Model):
 
 class Comment(models.Model):
     postby = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    body = models.TextField(blank=False)
+    body = models.TextField(blank=False, null=False)
     parent = models.ForeignKey(
         'self', on_delete=models.CASCADE, related_name='replies', null=True)
     timestamp = models.DateTimeField(default=now)

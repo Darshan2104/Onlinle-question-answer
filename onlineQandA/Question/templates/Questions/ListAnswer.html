@@ -33,7 +33,7 @@
 </style>
 <div class="row">
     <div class="col-sm-2">
-        <a href="/DetailsQUE/{{qid}}">Back to Question</a>
+        <h5><a href="/DetailsQUE/{{qid}}">/Home/Question</a></h5>
     </div>
     <div class="col-sm-8">
         <form class="form-inline my-2 my-lg-2" action="/Listanswer/{{qid}}" method="GET">
@@ -87,9 +87,11 @@
                                                 <a href="/Listanswer/{{qid}}/DetailsANS/{{q.id}}"
                                                     class="user-link"><label><b>{{q.title}}</b></label></a>
                                                 <!-- remaining -->
-                                                PostBy :<a href="#" style="text-decoration: none; color:green"><span
-                                                        class="user-subhead"><b>{{q.postby}}</b></span></a>
-                                                at <span>{{q.postdate}}</span>
+                                                <i class="fa fa-user"></i> <a href="#"
+                                                    style="text-decoration: none; color:green"><span
+                                                        class="user-subhead"><b>
+                                                            {{q.postby}}</b></span></a>&nbsp;&nbsp;&nbsp;
+                                                <i class="fa fa-calendar"></i> <span> {{q.postdate}}</span>
                                             </td>
                                             <td style="width: 10%;">
                                                 <i class="fa fa-thumbs-up"> <b> {{a}}</b></i>

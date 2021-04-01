@@ -39,16 +39,16 @@
             <div class="container p-1">
                 <!-- first section -->
                 <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-light rounded">
-                    <a href="/" class="btn "><i class="fa fa-tags"></i> <b>Tag</b></a>
+                    <a href="/comingsoon" class="btn "><i class="fa fa-tags"></i> <b>Tag</b></a>
                 </div>
                 <!-- <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-white rounded">
                         <a href="categories.html" class="btn"><i class="fa fa-list"></i> Category</a>
                     </div> -->
                 <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-light rounded">
-                    <a href="/" class="btn"><i class="fa fa-users"></i> <b>Peopel</b></a>
+                    <a href="/comingsoon" class="btn"><i class="fa fa-users"></i> <b>Peopel</b></a>
                 </div>
                 <div class="row d-flex ml-1 py-1 shadow-sm p-1 mb-3 bg-light rounded">
-                    <a href="/" class="btn"> <i class="fa fa-wrench"></i> <b>Help</b> </a>
+                    <a href="/comingsoon" class="btn"> <i class="fa fa-wrench"></i> <b>Help</b> </a>
                 </div>
             </div>
 
@@ -95,9 +95,11 @@
                                                     <a href="/DetailsQUE/{{q.id}}"
                                                         class="user-link"><label><b>{{q.title}}</b></label></a>
                                                     <!-- remaining -->
-                                                    PostBy :<a href="#" style="text-decoration: none; color:green"><span
-                                                            class="user-subhead"><b>{{q.postby}}</b></span></a>
-                                                    at <span><b>{{q.postdate}}</b></span>
+                                                    <i class="fa fa-user"></i><a href="#"
+                                                        style="text-decoration: none; color:green"><span
+                                                            class="user-subhead"><b> {{q.postby}}
+                                                            </b></span></a>&nbsp;&nbsp;&nbsp;
+                                                    <i class="fa fa-calendar"></i><span><b> {{q.postdate}}</b></span>
                                                 </td>
                                                 <td style="width: 10%;">
                                                     <i class="fa fa-thumbs-up"> <b> {{a}}</b></i>

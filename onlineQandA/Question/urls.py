@@ -40,4 +40,6 @@ urlpatterns = [
     path('mostvoted/<int:qid>', views.Mostvotedans, name='Mostvotted-answers'),
     path('mostviewed/<int:qid>', views.Mostviwedans, name='Mostviwed-answers'),
 
+    path('comingsoon', views.comingsoon, name='coming-soon'),
+
 ]

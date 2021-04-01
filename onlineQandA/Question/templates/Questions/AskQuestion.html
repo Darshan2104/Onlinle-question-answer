@@ -1,23 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <title>ADD Question</title>
-</head>
-
-<body>
-    <a href="{% url 'Home' %}">Home</a>
-
-    {% load crispy_forms_tags %}
-    <h1>ADD QUESTION</h1>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{q_form.media}}
-        {{q_form|crispy}}
-        <input type="submit" value="POST" />
-    </form>
-
-</body>
-
-</html>
+{% extends "Questions/base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="container emp-profile">
+    <div class="jumbotron">
+        <h1 style="text-align: center;"><b> Ask Question</b></h1>
+        <br>
+        <br>
+        <form method="POST" class="form-group" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{q_form.media}}
+            {{q_form|crispy}}
+            <input type="submit" class="btn btn-dark" value="POST" />
+        </form>
+    </div>
+</div>
+{% endblock content %}
