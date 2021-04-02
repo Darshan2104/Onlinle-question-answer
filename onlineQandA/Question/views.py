@@ -364,4 +364,4 @@ def Mostviwedans(request, qid):
 
 
 def comingsoon(request):
-    return render(request, 'Question/commingsoon.html')
+    return render(request, 'Questions/commingsoon.html')
