@@ -9,6 +9,7 @@ Developed in Django.
 * Add/Update question
 * Select question and add/update answer
 * Like-dislike question and answer
+* Comments on question and answer
 * View count
 ````
 
