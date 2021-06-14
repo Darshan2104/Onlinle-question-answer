@@ -1,4 +1,4 @@
-# Onlinle-question-answer
+# Online Question-Answer System
 
 Developed in Django. 
 
@@ -36,5 +36,5 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Video Link : Cooming Soon
+Video Link : https://youtu.be/NkvkaIrBEL8
 
