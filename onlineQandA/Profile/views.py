@@ -45,11 +45,12 @@ def editprofile(request):
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=profile)
 
-    context = {
-        'u_form': u_form,
-        'p_form': p_form
-    }
-    return render(request, 'Profile/edit_profile.html', context)
+    # context = {
+    #     'u_form': u_form,
+    #     'p_form': p_form
+    # }
+    # print(u_form,p_form)
+    return render(request, 'Profile/edit_Profile.html', {'u_form': u_form, 'p_form': p_form})
 
 
 @login_required
